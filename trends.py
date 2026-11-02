@@ -73,7 +73,7 @@ def extract_words(text):
     >>> extract_words("paperclips! they're so awesome, cool, & useful!")
     ['paperclips', 'they', 're', 'so', 'awesome', 'cool', 'useful']
     """
-    text = text.replace('#', ' ')
+    text = text.replace('#', ' ').replace('!', ' ').replace('&', ' ').replace('?', ' ').replace('.', ' ').replace(',', ' ').replace(':', ' ').replace(';', ' ')
     for char in text:
         if char not in ascii_letters:
             text = text.replace(char, ' ')
