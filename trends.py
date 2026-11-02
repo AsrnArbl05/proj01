@@ -37,17 +37,17 @@ def make_tweet(text, time, lat, lon):
 
 def tweet_words(tweet):
     """Return a list of the words in the text of a tweet."""
-    raise NotImplementedError("tweet_words is not implemented yet")
+    return extract_words(tweet["text"])
 
 
 def tweet_time(tweet):
     """Return the datetime that represents when the tweet was posted."""
-    raise NotImplementedError("tweet_time is not implemented yet")
+    return tweet["time"]
 
 
 def tweet_location(tweet):
     """Return a position (see geo.py) that represents the tweet's location."""
-    raise NotImplementedError("tweet_location is not implemented yet")
+    return make_position(tweet["latitude"], tweet["longitude"])
 
 
 def tweet_string(tweet):
@@ -73,6 +73,11 @@ def extract_words(text):
     >>> extract_words("paperclips! they're so awesome, cool, & useful!")
     ['paperclips', 'they', 're', 'so', 'awesome', 'cool', 'useful']
     """
+    text = text.replace('#', ' ')
+    for char in text:
+        if char not in ascii_letters:
+            text = text.replace(char, ' ')
+    return text.split()
     raise NotImplementedError("extract_words is not implemented yet")
 
 
