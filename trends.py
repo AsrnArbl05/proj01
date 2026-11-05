@@ -261,8 +261,17 @@ def find_closest_state(tweet, state_centers):
     >>> find_closest_state(ny, us_centers)
     'NJ'
     """
-    raise NotImplementedError("find_closest_state is not implemented yet")
+    tweet_location = tweet_location(tweet)
+    closest_state = None
+    min_distance = float('inf')
+    
+    for state, center in state_centers.items():
+        distance = geo_distance(tweet_location, center)
+        if distance < min_distance:
+            min_distance = distance
+            closest_state = state
 
+    return closest_state    
 
 def group_tweets_by_state(tweets):
     """Return a dictionary that aggregates tweets by their nearest state center.
@@ -280,8 +289,14 @@ def group_tweets_by_state(tweets):
     >>> tweet_string(ca_tweets[0])
     '"Welcome to San Francisco" @ (38, -122)'
     """
-    raise NotImplementedError("group_tweets_by_state is not implemented yet")
-
+    state_centers = {state: find_center(polygons) for state, polygons in us_states.items()}
+    tweets_by_state =  {}
+    for tweet in tweets: 
+        closest_state = find_closest_state(tweet, state_centers)
+        if closest_state not in tweets_by_state:
+            tweets_by_state[closest_state] = []
+        tweets_by_state[closest_state].append(tweet)
+    return tweets_by_state
 
 def average_sentiments(tweets_by_state):
     """Calculate the average sentiment of the states by averaging over all
@@ -309,8 +324,12 @@ def average_sentiments(tweets_by_state):
     >>> average_sentiments({})
     {}
     """
-    raise NotImplementedError("average_sentiments is not implemented yet")
-
+    average_sentiments_by_state = {}
+    for state, tweets in tweets_by_state.items():
+        sentiments = [sentiment_value(analyze_tweet_sentiment(tweet)) for tweet in tweets if has_sentiment(analyze_tweet_sentiment(tweet))]
+        if sentiments:
+            average_sentiments_by_state[state] = sum(sentiments) / len(sentiments)
+    return average_sentiments_by_state
 
 # Milestone 5: A Finer Grid
 
