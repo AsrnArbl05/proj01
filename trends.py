@@ -183,8 +183,22 @@ def find_centroid(polygon):
     >>> find_centroid([p1, p2, p1])
     (1, 2, 0)
     """
-    raise NotImplementedError("find_centroid is not implemented yet")
-
+    x = 0
+    y = 0
+    area = 0
+    for i in range(len(polygon) - 1):
+        xi, yi = latitude(polygon[i]), longitude(polygon[i])
+        xi1, yi1 = latitude(polygon[i + 1]), longitude(polygon[i + 1])
+        a = xi * yi1 - xi1 * yi
+        area += a
+        x += (xi + xi1) * a
+        y += (yi + yi1) * a
+    area /= 2
+    if area == 0:
+        return latitude(polygon[0]), longitude(polygon[0]), 0
+    x /= (6 * area)
+    y /= (6 * area)
+    return x, y, abs(area)
 
 def find_center(polygons):
     """Compute the geographic center of a state, averaged over its polygons.
@@ -207,7 +221,23 @@ def find_center(polygons):
     >>> round(longitude(hi), 5)
     -156.21763
     """
-    raise NotImplementedError("find_center is not implemented yet")
+    total_area = 0
+    weighted_lat_sum = 0
+    weighted_lon_sum = 0
+
+    for polygon in polygons:
+        centroid_lat, centroid_lon, area = find_centroid(polygon)
+        total_area += area
+        weighted_lat_sum += centroid_lat * area
+        weighted_lon_sum += centroid_lon * area
+
+    if total_area == 0:
+        return make_position(0, 0)  # Default position if no area
+
+    average_lat = weighted_lat_sum / total_area
+    average_lon = weighted_lon_sum / total_area
+
+    return make_position(average_lat, average_lon)
 
 
 # Milestone 4: The Mood of the Nation
