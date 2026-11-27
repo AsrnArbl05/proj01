@@ -350,7 +350,13 @@ def find_cell(position, size):
     >>> find_cell(make_position(40.0, -74.0), 2)
     (20, -37)
     """
-    raise NotImplementedError("find_cell is not implemented yet")
+    latitude = position[0]
+    longitude = position[1]
+
+    row = int(latitude // size)
+    column = int(longitude // size)
+
+    return (row, column)
 
 
 def group_tweets_by_cell(tweets, size):
@@ -370,8 +376,18 @@ def group_tweets_by_cell(tweets, size):
     >>> len(grouped[(37, -123)])
     2
     """
-    raise NotImplementedError("group_tweets_by_cell is not implemented yet")
+    grouped = {}
 
+    for tweet in tweets:
+        position = tweet_location(tweet)
+        cell = find_cell(position, size)
+
+        if cell not in grouped:
+            grouped[cell] = []
+
+        grouped[cell].append(tweet)
+
+    return grouped
 
 # Additions
 
